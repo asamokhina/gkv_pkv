@@ -1,0 +1,87 @@
+[project]
+name = "gkv"
+version = "0.0.0"
+description = ""
+authors = []
+requires-python = ">= 3.11"
+
+dependencies = [
+    "pandas",
+    "numpy",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest-mypy",
+    "mypy>=1.7",
+    "pdbpp",
+    "ipykernel>=6.27.1",
+    "jupyter",
+    "ipywidgets",
+    "ruff",
+]
+test = [
+    "pytest>=7",
+]
+
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN101", # Missing type annotation for `self` in method
+    "ANN102", # Missing type annotation for `cls` in classmethod
+    "ANN204", # Missing return type annotation for special method `__init__`
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
+    "D203", # one-blank-line-before-class
+    "D212", # multi-line-summary-first-line
+    "D10",  # Missing docstring
+    "ERA001", # Found commented-out code
+    "FA", # Missing `from __future__ import annotations`
+    "FIX002", # Line contains TODO, consider resolving the issue
+    "S101", # Use of `assert` detected
+    "TD", # TODO lints
+    "PLR0913", # Too many arguments in function definition
+]
+
+[tool.ruff.lint.extend-per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/**/*" = [
+    "INP001",
+    "ANN",  # Missing type annotation
+]
+
+[tool.ruff.lint.isort]
+forced-separate = ["tests"]
+known-first-party = ["layman.*"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "scipy.special",
+    "pyarrow.*",
+    "transformers",
+    "nltk.*",
+    "openai.*",
+    "datasets.*",
+    "ruamel.*",
+    "tiktoken.*",
+]
+ignore_missing_imports = true
+
+[pytest]
+testpaths = "tests"
