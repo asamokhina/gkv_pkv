@@ -267,7 +267,7 @@ def makr_plot(gkv_costs, pkv_costs):
     axs[1].set_ylabel("Density")
     axs[1].legend()
 
-    plt.tight_layout()
+    # plt.tight_layout()
     return fig
 
 
@@ -290,7 +290,7 @@ def main():
     age_retirement = st.slider("Age at retirement", 60, 80, 67)
     expected_lifespan = st.slider("Expected lifespan", 30, 100, 85)
     rente_anspruch_start = st.number_input("Retirement Claim today", 1000, 5000, 2000)
-    pkv_initial_cost = st.number_input("PKV Initial Cost", 200, 1000, 500)
+    pkv_initial_cost = st.number_input("PKV Initial Cost (Total)", 200, 1000, 500)
     no_pkv_extra_since_years = st.slider("No 10% statutory surcharge in PKV since years", 50, 70, 60)
     kid_pkv_cost = 0
 
@@ -315,14 +315,14 @@ def main():
     for i in range(kids_number):
         start, end = st.session_state.care_years[i]
         new_start = st.slider(
-            f"Kid {i+1} start of care year",
+            f"Kid {i+1} start of care. Your age",
             age_at_start,
             expected_lifespan,
             start,
             key=f"start_{i}",
         )
         new_end = st.slider(
-            f"Kid {i+1} end of care year",
+            f"Kid {i+1} end of care. Your age",
             age_at_start,
             expected_lifespan,
             end,
@@ -331,7 +331,7 @@ def main():
         st.session_state.care_years[i] = (new_start, new_end)
 
     if st.session_state.care_years:
-        kid_pkv_cost = st.number_input("Kid PKV Cost", 50, 500, 200)
+        kid_pkv_cost = st.number_input("Kid PKV Monthly Cost", 50, 500, 200)
 
     # button to start simulation
     if st.button("Start simulation"):
@@ -358,6 +358,10 @@ def main():
             ties_percentage,
             average_percentage_diff,
         ) = calculate_wins(n_simulations, gkv_costs, pkv_costs)
+
+        st.write(f"GKV average lifetime cost: {np.mean(gkv_costs)}"
+
+        st.write(f"PKV average lifetime cost: {np.mean(pkv_costs)}"
 
         st.write(
             f"GKV wins: {gkv_wins_percentage}%, PKV wins: {pkv_wins_percentage}%, Ties: {ties_percentage}%"
