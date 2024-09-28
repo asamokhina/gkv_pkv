@@ -61,6 +61,12 @@ def get_gkv_cost(gkv_percent_bag, zusatz_percent_bag, income):
     gkv_cost = 12 * (income * gkv_percent + income * zusatz_percent)
     return gkv_cost
 
+def add_kids_cost_to_pkv(pkv_cost):
+    for kid in kids:
+        # start and end of care years
+        if year > kid[0] and year < kid[1]:
+            pkv_cost += kid_pkv_cost * 12
+    return pkv_cost
 
 def get_pkv_cost(
     pkv_increase_bag,
@@ -77,12 +83,6 @@ def get_pkv_cost(
 
     if year == no_pkv_extra_since_years:
         pkv_cost = pkv_cost * 0.9
-
-    if kids:
-        for kid in kids:
-            # start and end of care years
-            if year > kid[0] and year < kid[1]:
-                pkv_cost += kid_pkv_cost * 12
 
     return pkv_cost
 
@@ -128,8 +128,16 @@ def simulate_gkv_pkv_for_lifespan(
             no_pkv_extra_since_years,
             kid_pkv_cost,
         )
+
+        # pkv_cost is used to calculate next year increase
+        # assign another variable to add kids cost
+        if kids:
+            final_pkv_cost = add_kids_cost_to_pkv(pkv_cost)
+        else:
+            final_pkv_cost = pkv_cost
+
         # employer pays the other half
-        pkv_year_cost.append(pkv_cost / 2)
+        pkv_year_cost.append(final_pkv_cost / 2)
 
         # print(f"{year}: GKV: {gkv_cost/12}, PKV: {pkv_cost/12}, Rente: {rente}")
 
@@ -359,9 +367,9 @@ def main():
             average_percentage_diff,
         ) = calculate_wins(n_simulations, gkv_costs, pkv_costs)
 
-        st.write(f"GKV average lifetime cost: {np.mean(gkv_costs)}")
+        st.write(f"GKV average lifetime cost: {int(np.mean(gkv_costs))}")
 
-        st.write(f"PKV average lifetime cost: {np.mean(pkv_costs)}")
+        st.write(f"PKV average lifetime cost: {int(np.mean(pkv_costs))}")
 
         st.write(
             f"GKV wins: {gkv_wins_percentage}%, PKV wins: {pkv_wins_percentage}%, Ties: {ties_percentage}%"
