@@ -5,7 +5,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-root_dir = Path("../../.data/").resolve()
+root_dir = Path("../.data/").resolve()
 
 
 def read_pkv():
