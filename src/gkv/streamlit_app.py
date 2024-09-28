@@ -134,7 +134,7 @@ def simulate_gkv_pkv_for_lifespan(
         # assign another variable to add kids cost
         if kids:
             final_pkv_cost, kid_pkv_cost = add_kids_cost_to_pkv(
-                pkv_cost, kids, year, kid_pkv_cost, kid_pkv_cost, pkv_increase_bag
+                pkv_cost, kids, year, kid_pkv_cost, pkv_increase_bag
             )
         else:
             final_pkv_cost = pkv_cost
@@ -163,7 +163,7 @@ def simulate_gkv_pkv_for_lifespan(
         # assign another variable to add kids cost
         if kids:
             final_pkv_cost, kid_pkv_cost = add_kids_cost_to_pkv(
-                pkv_cost, kids, year, kid_pkv_cost, kid_pkv_cost, pkv_increase_bag
+                pkv_cost, kids, year, kid_pkv_cost, pkv_increase_bag
             )
         else:
             final_pkv_cost = pkv_cost
