@@ -21,9 +21,7 @@ def read_insurance():
 
 
 def read_zusatz():
-    return pd.read_csv(
-        root_dir / "additional_contribution_rates_with_increase.csv"
-    )
+    return pd.read_csv(root_dir / "additional_contribution_rates_with_increase.csv")
 
 
 def read_rente_anpassung():
@@ -61,12 +59,14 @@ def get_gkv_cost(gkv_percent_bag, zusatz_percent_bag, income):
     gkv_cost = 12 * (income * gkv_percent + income * zusatz_percent)
     return gkv_cost
 
-def add_kids_cost_to_pkv(pkv_cost, kids):
+
+def add_kids_cost_to_pkv(pkv_cost, kids, year):
     for kid in kids:
         # start and end of care years
         if year > kid[0] and year < kid[1]:
             pkv_cost += kid_pkv_cost * 12
     return pkv_cost
+
 
 def get_pkv_cost(
     pkv_increase_bag,
@@ -132,7 +132,7 @@ def simulate_gkv_pkv_for_lifespan(
         # pkv_cost is used to calculate next year increase
         # assign another variable to add kids cost
         if kids:
-            final_pkv_cost = add_kids_cost_to_pkv(pkv_cost, kids)
+            final_pkv_cost = add_kids_cost_to_pkv(pkv_cost, kids, year)
         else:
             final_pkv_cost = pkv_cost
 
@@ -158,7 +158,14 @@ def simulate_gkv_pkv_for_lifespan(
             kid_pkv_cost,
         )
 
-        pkv_own_share_cost = pkv_cost - gkv_own_share_cost
+        # pkv_cost is used to calculate next year increase
+        # assign another variable to add kids cost
+        if kids:
+            final_pkv_cost = add_kids_cost_to_pkv(pkv_cost, kids, year)
+        else:
+            final_pkv_cost = pkv_cost
+
+        pkv_own_share_cost = final_pkv_cost - gkv_own_share_cost
         pkv_year_cost.append(pkv_own_share_cost)
 
         # print(f"{year}: GKV: {gkv_cost/12}, PKV: {pkv_cost/12}, Rente: {rente}")
@@ -182,7 +189,6 @@ def run_simulation(
     kid_pkv_cost,
     kids,
 ):
-
     max_salary_for_gkv_2023 = df["BBG (Month)"].loc[2023]
 
     max_salary_change_bag = df["BBG (Month) pct"].values
@@ -267,9 +273,7 @@ def makr_plot(gkv_costs, pkv_costs):
     axs[1].legend()
 
     sns.kdeplot(gkv_costs, ax=axs[2], label="GKV", fill=True, color="blue", alpha=0.5)
-    sns.kdeplot(
-        pkv_costs, ax=axs[2], label="PKV", fill=True, color="orange", alpha=0.5
-    )
+    sns.kdeplot(pkv_costs, ax=axs[2], label="PKV", fill=True, color="orange", alpha=0.5)
     axs[1].set_title("Density plot for costs")
     axs[1].set_xlabel("Costs sum for life")
     axs[1].set_ylabel("Density")
@@ -299,7 +303,9 @@ def main():
     expected_lifespan = st.slider("Expected lifespan", 30, 100, 85)
     rente_anspruch_start = st.number_input("Retirement Claim today", 1000, 5000, 2000)
     pkv_initial_cost = st.number_input("PKV Initial Cost (Total)", 200, 1000, 500)
-    no_pkv_extra_since_years = st.slider("No 10% statutory surcharge in PKV since years", 50, 70, 60)
+    no_pkv_extra_since_years = st.slider(
+        "No 10% statutory surcharge in PKV since years", 50, 70, 60
+    )
     kid_pkv_cost = 0
 
     if expected_lifespan < age_at_start:
@@ -343,7 +349,6 @@ def main():
 
     # button to start simulation
     if st.button("Start simulation"):
-
         gkv_costs, pkv_costs = run_simulation(
             n_simulations,
             df,
