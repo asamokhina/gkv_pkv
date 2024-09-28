@@ -1,36 +1,34 @@
-[project]
+[tool.poetry]
 name = "gkv"
 version = "0.0.0"
 description = ""
 authors = []
-requires-python = ">= 3.11"
+readme = "README.md"
+packages = [{include = "gkv"}]
 
-dependencies = [
-    "pandas",
-    "numpy",
-    "matplotlib",
-    "streamlit>=1.38.0",
-    "seaborn>=0.13.2",
-]
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "*"
+numpy = "*"
+matplotlib = "*"
+streamlit = "^1.38.0"
+seaborn = "^0.13.2"
 
-[project.optional-dependencies]
-dev = [
-    "pytest-mypy",
-    "mypy>=1.7",
-    "pdbpp",
-    "ipykernel>=6.27.1",
-    "jupyter",
-    "ipywidgets",
-    "ruff",
-]
-test = [
-    "pytest>=7",
-]
+[tool.poetry.group.dev.dependencies]
+pytest-mypy = "*"
+mypy = "^1.7"
+pdbpp = "*"
+ipykernel = "^6.27.1"
+jupyter = "*"
+ipywidgets = "*"
+ruff = "*"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7"
 
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
-
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 line-length = 88
@@ -85,5 +83,5 @@ module = [
 ]
 ignore_missing_imports = true
 
-[pytest]
-testpaths = "tests"
+[tool.pytest.ini_options]
+testpaths = ["tests"]
