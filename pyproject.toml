@@ -4,7 +4,7 @@ version = "0.0.0"
 description = ""
 authors = []
 readme = "README.md"
-packages = [{include = "gkv"}]
+packages = [{include = "gkv", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
