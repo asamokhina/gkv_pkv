@@ -60,12 +60,17 @@ def get_gkv_cost(gkv_percent_bag, zusatz_percent_bag, income):
     return gkv_cost
 
 
-def add_kids_cost_to_pkv(pkv_cost, kids, year, kid_pkv_cost):
+def add_kids_cost_to_pkv(
+    pkv_cost, kids, year, kid_pkv_cost_last_year, pkv_increase_bag
+):
+    pkv_increase = np.random.choice(pkv_increase_bag)
+    # print(f"{pkv_increase=}")
+    kid_pkv_cost = kid_pkv_cost_last_year * (1 + pkv_increase)
     for kid in kids:
         # start and end of care years
         if year > kid[0] and year < kid[1]:
             pkv_cost += kid_pkv_cost * 12
-    return pkv_cost
+    return pkv_cost, kid_pkv_cost
 
 
 def get_pkv_cost(
@@ -128,7 +133,9 @@ def simulate_gkv_pkv_for_lifespan(
         # pkv_cost is used to calculate next year increase
         # assign another variable to add kids cost
         if kids:
-            final_pkv_cost = add_kids_cost_to_pkv(pkv_cost, kids, year, kid_pkv_cost)
+            final_pkv_cost, kid_pkv_cost = add_kids_cost_to_pkv(
+                pkv_cost, kids, year, kid_pkv_cost, kid_pkv_cost, pkv_increase_bag
+            )
         else:
             final_pkv_cost = pkv_cost
 
@@ -155,7 +162,9 @@ def simulate_gkv_pkv_for_lifespan(
         # pkv_cost is used to calculate next year increase
         # assign another variable to add kids cost
         if kids:
-            final_pkv_cost = add_kids_cost_to_pkv(pkv_cost, kids, year, kid_pkv_cost)
+            final_pkv_cost, kid_pkv_cost = add_kids_cost_to_pkv(
+                pkv_cost, kids, year, kid_pkv_cost, kid_pkv_cost, pkv_increase_bag
+            )
         else:
             final_pkv_cost = pkv_cost
 
