@@ -359,9 +359,9 @@ def main():
             average_percentage_diff,
         ) = calculate_wins(n_simulations, gkv_costs, pkv_costs)
 
-        st.write(f"GKV average lifetime cost: {np.mean(gkv_costs)}"
+        st.write(f"GKV average lifetime cost: {np.mean(gkv_costs)}")
 
-        st.write(f"PKV average lifetime cost: {np.mean(pkv_costs)}"
+        st.write(f"PKV average lifetime cost: {np.mean(pkv_costs)}")
 
         st.write(
             f"GKV wins: {gkv_wins_percentage}%, PKV wins: {pkv_wins_percentage}%, Ties: {ties_percentage}%"
